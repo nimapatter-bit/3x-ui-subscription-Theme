@@ -1,13 +1,469 @@
-<!doctype html>
-<html lang="fa" dir="rtl" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>AmiricanoVPN Panel</title>
-  </head>
-  <body class="antialiased font-sans bg-slate-950 text-slate-50 selection:bg-blue-500/30">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmiricanoVPN X-UI</title>
+    <!-- Tailwind CSS CDN for Vanilla HTML file -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body { font-family: 'Vazirmatn', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Language visibility rules */
+        html[lang="fa"] .en-only { display: none !important; }
+        html[lang="en"] .fa-only { display: none !important; }
 
+        /* Smooth tab transition */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            opacity: 1;
+        }
+
+        .direction-ltr {
+            direction: ltr;
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f8] dark:bg-[#0f172a] transition-colors duration-700 text-slate-800 dark:text-slate-100 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center relative">
+
+    <div class="w-full max-w-md h-[100dvh] flex flex-col relative z-20 shadow-2xl overflow-hidden bg-white/60 dark:bg-black/40 border-x border-white/40 dark:border-white/5 backdrop-blur-3xl mx-auto">
+        
+        <!-- Navbar -->
+        <header class="flex flex-col pb-2 z-50 relative px-5 pt-6 shrink-0">
+            <div class="flex items-center justify-between font-mono">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-800 rounded-xl flex items-center justify-center shadow-lg border border-white/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </div>
+                    <span class="text-lg font-extrabold text-blue-600 dark:text-blue-400 font-sans tracking-tight" dir="ltr">
+                        AmiricanoVPN
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-2 z-50">
+                    <button id="langToggle" class="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-800 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 font-sans fa-only">فارسی</span>
+                        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 font-sans en-only">English</span>
+                        <svg class="w-3 h-3 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <button id="themeToggle" class="p-2 bg-white dark:bg-slate-800 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shadow-sm text-slate-700 dark:text-slate-200">
+                        <svg class="w-4 h-4 text-amber-500 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-4 h-4 text-indigo-400 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-hidden relative z-20 flex flex-col pb-0">
+            
+            <!-- HOME TAB -->
+            <div id="tab-home" class="tab-content flex-col w-full h-full overflow-y-auto hide-scrollbar pt-4 pb-[130px] px-5 space-y-6">
+                <!-- User Status Container -->
+                <div class="bg-white dark:bg-slate-800 rounded-[1.75rem] overflow-hidden p-6 border border-slate-200 dark:border-slate-700 relative shadow-sm">
+                    <div class="flex justify-between items-start mb-5 relative z-10">
+                        <div>
+                            <h2 class="text-[17px] font-bold tracking-tight mb-1" dir="ltr">nimapatter@gmail.com</h2>
+                            <div class="flex items-center gap-1.5 flex-row" id="status-container">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                                </span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 fa-only">سرویس فعال است</span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 en-only">Service is active</span>
+                            </div>
+                        </div>
+                        <div class="w-11 h-11 bg-slate-100 dark:bg-slate-700/50 rounded-xl flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-600">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 mb-6 relative z-10">
+                        <div class="flex justify-between items-end">
+                            <span class="text-blue-600 dark:text-blue-400 font-black text-3xl tracking-tight">2.2%</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-xs font-medium fa-only">مصرف کل</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-xs font-medium en-only">Total Usage</span>
+                        </div>
+                        
+                        <div class="h-2.5 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden relative">
+                            <div id="progress-bar" class="absolute top-0 bottom-0 right-0 bg-blue-500 dark:bg-blue-600 rounded-full w-[2.2%] shadow"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-[11px] text-slate-500 dark:text-slate-400 font-bold font-mono pt-1" id="usage-stats-container">
+                            <span>Used: 446 MB</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><span class="text-[10px]">↓</span> 1.2 GB</span>
+                                <span class="text-blue-600 dark:text-blue-400 flex items-center gap-1"><span class="text-[10px]">↑</span> 210 MB</span>
+                            </div>
+                            <span>Total: 20 GB</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 relative z-10">
+                        <div class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl py-3.5 px-2 flex flex-col items-center justify-center text-center border border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold fa-only">حجم باقی‌مانده</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold en-only">Remaining Data</span>
+                            <span class="text-[17px] font-black text-slate-800 dark:text-white font-mono">19.56 GB</span>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl py-3.5 px-2 flex flex-col items-center justify-center text-center border border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold fa-only">روزهای باقی‌مانده</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold en-only">Remaining Days</span>
+                            <span class="text-[17px] font-black text-slate-800 dark:text-white">29 <span class="text-[10px] font-normal fa-only">روز</span><span class="text-[10px] font-normal en-only">Days</span></span>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl py-3.5 px-2 flex flex-col items-center justify-center text-center border border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold fa-only">تاریخ انقضا (شمسی)</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold en-only">Expiration (J)</span>
+                            <span class="text-[15px] font-bold text-slate-800 dark:text-white font-mono">1405/04/18</span>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl py-3.5 px-2 flex flex-col items-center justify-center text-center border border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold fa-only">تاریخ انقضا (میلادی)</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] mb-1.5 font-bold en-only">Expiration (G)</span>
+                            <span class="text-[15px] font-bold text-slate-800 dark:text-white font-mono">2026-07-09</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Link -->
+                <div class="w-full shrink-0">
+                    <h3 class="text-[13px] font-bold text-slate-600 dark:text-slate-300 mb-2.5 px-1 fa-only">لینک اتصال هوشمند (سابسکریپشن)</h3>
+                    <h3 class="text-[13px] font-bold text-slate-600 dark:text-slate-300 mb-2.5 px-1 en-only">Smart Connection Link</h3>
+                    <div class="flex items-center gap-2.5">
+                        <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center pr-4 pl-1.5 h-[56px] overflow-hidden shadow-sm">
+                            <svg class="text-blue-500 dark:text-blue-400 w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            <input 
+                                type="text" 
+                                readonly 
+                                value="vless://e0c5ec1aaec81..." 
+                                class="bg-transparent border-none outline-none text-slate-700 dark:text-slate-300 text-sm font-mono w-full px-3 text-left direction-ltr"
+                                dir="ltr"
+                            />
+                            <button class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition p-2.5 rounded-xl text-slate-600 dark:text-slate-300 shrink-0 mx-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 3h6m-3-3v6"></path></svg>
+                            </button>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition h-[56px] w-[56px] rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/30">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPS TAB -->
+            <div id="tab-apps" class="tab-content flex-col w-full h-full overflow-y-auto hide-scrollbar pt-4 pb-[130px] px-5">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-[17px] font-extrabold text-slate-800 dark:text-white fa-only">معرفی برنامه‌ها</h3>
+                    <h3 class="text-[17px] font-extrabold text-slate-800 dark:text-white en-only">Apps Guide</h3>
+                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm fa-only">آموزش اتصال</span>
+                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm en-only">Tutorial</span>
+                </div>
+                
+                <div class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-2 mb-4 -mx-5 px-5">
+                    <button class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 rounded-full text-white whitespace-nowrap shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <span class="text-sm font-bold fa-only">ویندوز</span>
+                        <span class="text-sm font-bold en-only">Windows</span>
+                    </button>
+                    <button class="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300 whitespace-nowrap border border-slate-200 dark:border-slate-700 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"></path></svg>
+                        <span class="text-sm font-bold fa-only">مک</span>
+                        <span class="text-sm font-bold en-only">Mac</span>
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-[1.5rem] p-6 border border-slate-200 dark:border-slate-700 mb-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-5 gap-3" id="happ-container">
+                        <div class="flex-1 min-w-0 pr-1 flex flex-col justify-end text-end" id="happ-text-container">
+                            <h4 class="text-[17px] font-bold text-slate-800 dark:text-white mb-2.5 flex items-center justify-end gap-2 shrink-0">
+                                <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md whitespace-nowrap fa-only">پیشنهادی</span>
+                                <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md whitespace-nowrap en-only">Recommended</span>
+                                <span class="truncate" dir="ltr">Happ</span>
+                            </h4>
+                            <div class="flex justify-end gap-2 flex-wrap">
+                                <button class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-200 transition" dir="ltr">Google Play</button>
+                                <button class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-200 transition" dir="ltr">APK</button>
+                            </div>
+                        </div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20 text-white font-black text-3xl ml-4">
+                            H
+                        </div>
+                    </div>
+                    <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed text-justify fa-only">بهترین و سریع‌ترین کلاینت برای اتصال به سرورهای V2ray با قابلیت بروزرسانی خودکار سابسکریپشن‌ها.</p>
+                    <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed text-justify en-only">Best and fastest client for connecting to V2ray servers with auto-update capability.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 px-1 fa-only">سایر برنامه‌ها</h4>
+                    <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 px-1 en-only">Other Apps</h4>
+                    
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 flex justify-between items-center shadow-sm" id="v2ray-container">
+                        <button class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            <span class="fa-only">دانلود مستقیم</span>
+                            <span class="en-only">Direct Download</span>
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <span class="font-extrabold text-slate-800 dark:text-white text-[15px]" dir="ltr">V2RayNG</span>
+                            <div class="w-11 h-11 bg-slate-100 dark:bg-slate-900 rounded-xl flex items-center justify-center">
+                                <span class="text-blue-500 dark:text-blue-400 font-black text-2xl leading-none">V</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONFIGS TAB -->
+            <div id="tab-configs" class="tab-content flex-col w-full h-full overflow-y-auto hide-scrollbar pt-4 pb-[130px] px-5">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/50">3 <span class="fa-only font-sans">کانفیگ</span><span class="en-only font-sans">Configs</span></span>
+                    <div class="flex items-center gap-3" id="config-title-container">
+                        <div class="text-right flex flex-col items-end">
+                            <h3 class="font-bold text-slate-800 dark:text-white text-[15px] fa-only">کانفیگ‌های اختصاصی</h3>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-[15px] en-only">Dedicated Configs</h3>
+                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 fa-only">برای کپی کلیک کنید</p>
+                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 en-only">Click to copy</p>
+                        </div>
+                        <div class="w-11 h-11 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- Config Item 1 -->
+                    <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-between hover:border-blue-300 dark:hover:border-blue-600 transition-colors shadow-sm cursor-pointer">
+                        <div class="flex gap-2 shrink-0">
+                            <button class="p-2 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                            <button class="p-2 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 3h6m-3-3v6"></path></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 text-right flex-1 justify-end truncate ml-2">
+                            <div class="truncate flex flex-col items-end">
+                                <h4 class="font-bold text-slate-800 dark:text-white text-sm mb-1 font-mono flex items-center justify-end gap-2 truncate">
+                                    <span dir="ltr" class="truncate">GB/20 GB 0.44</span>
+                                    <span class="text-base leading-none shrink-0">🏳️</span>
+                                </h4>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-wider font-bold" dir="ltr">TROJAN Protocol</p>
+                            </div>
+                            <div class="text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider shrink-0 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300" dir="ltr">
+                                TROJAN
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Config Item 2 -->
+                    <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-between hover:border-blue-300 dark:hover:border-blue-600 transition-colors shadow-sm cursor-pointer">
+                        <div class="flex gap-2 shrink-0">
+                            <button class="p-2 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                            <button class="p-2 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 3h6m-3-3v6"></path></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 text-right flex-1 justify-end truncate ml-2">
+                            <div class="truncate flex flex-col items-end">
+                                <h4 class="font-bold text-slate-800 dark:text-white text-sm mb-1 font-mono flex items-center justify-end gap-2 truncate">
+                                    <span dir="ltr" class="truncate">GB/20 GB 0.44</span>
+                                    <span class="text-base leading-none shrink-0">🇩🇪</span>
+                                </h4>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-wider font-bold" dir="ltr">VLESS XTLS-Reality</p>
+                            </div>
+                            <div class="text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider shrink-0 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400" dir="ltr">
+                                VLESS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Floating Bottom Nav (Fixed Cutoff problem & Rounded edges) -->
+        <div class="absolute bottom-0 left-0 right-0 z-50 px-5 pb-5 pt-12 bg-gradient-to-t from-white via-white/90 dark:from-black dark:via-black/90 to-transparent pointer-events-none">
+            <div class="pointer-events-auto max-w-md mx-auto relative">
+                <div class="flex items-center justify-between bg-white dark:bg-slate-800 rounded-full px-2 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-200 dark:border-slate-700 mx-auto flex-row-reverse" id="bottom-nav">
+                    
+                    <button id="nav-home" onclick="setTab('home')" class="nav-btn active flex flex-col items-center justify-center w-full py-2.5 rounded-full transition-all duration-300 relative bg-blue-50 dark:bg-slate-700 scale-100">
+                        <svg class="w-5 h-5 mb-1 transition-colors text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        <span class="text-[10px] font-bold transition-colors text-blue-900 dark:text-white fa-only">داشبورد</span>
+                        <span class="text-[10px] font-bold transition-colors text-blue-900 dark:text-white en-only">Home</span>
+                    </button>
+                    
+                    <button id="nav-apps" onclick="setTab('apps')" class="nav-btn flex flex-col items-center justify-center w-full py-2.5 rounded-full transition-all duration-300 relative hover:bg-slate-50 dark:hover:bg-slate-700/50 scale-95 opacity-70 hover:opacity-100">
+                        <svg class="w-5 h-5 mb-1 transition-colors text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span class="text-[10px] font-bold transition-colors text-slate-500 fa-only">اپلیکیشن‌ها</span>
+                        <span class="text-[10px] font-bold transition-colors text-slate-500 en-only">Apps</span>
+                    </button>
+                    
+                    <button id="nav-configs" onclick="setTab('configs')" class="nav-btn flex flex-col items-center justify-center w-full py-2.5 rounded-full transition-all duration-300 relative hover:bg-slate-50 dark:hover:bg-slate-700/50 scale-95 opacity-70 hover:opacity-100">
+                        <svg class="w-5 h-5 mb-1 transition-colors text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                        <span class="text-[10px] font-bold transition-colors text-slate-500 fa-only">کانفیگ‌ها</span>
+                        <span class="text-[10px] font-bold transition-colors text-slate-500 en-only">Configs</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Default state
+        let currentLang = 'fa';
+        let isDarkMode = false;
+        let currentTab = 'home';
+
+        const htmlEl = document.documentElement;
+
+        // Initialize display for active tab on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTab('home', false); 
+        });
+
+        // Theme Toggle Handler
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                htmlEl.classList.add('dark');
+            } else {
+                htmlEl.classList.remove('dark');
+            }
+        });
+
+        // Language Toggle Handler
+        document.getElementById('langToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            htmlEl.setAttribute('lang', currentLang);
+            htmlEl.setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            
+            // Flex direction adjustment for specific elements 
+            const elementsToReverse = [
+                'status-container', 
+                'usage-stats-container', 
+                'happ-container', 
+                'v2ray-container', 
+                'config-title-container', 
+                'bottom-nav'
+            ];
+            
+            const happTextContainer = document.getElementById('happ-text-container');
+            const configTitleTextContainer = document.getElementById('config-title-container').children[0];
+            const progressBar = document.getElementById('progress-bar');
+
+            if (currentLang === 'en') {
+                // To LTR structure
+                elementsToReverse.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) { el.classList.remove('flex-row'); el.classList.add('flex-row-reverse'); }
+                });
+                
+                if(happTextContainer) {
+                    happTextContainer.classList.remove('text-end', 'items-end');
+                    happTextContainer.classList.add('text-start', 'items-start');
+                }
+                if(configTitleTextContainer) {
+                    configTitleTextContainer.classList.remove('items-end', 'text-right');
+                    configTitleTextContainer.classList.add('items-start', 'text-left');
+                }
+                if(progressBar) {
+                    progressBar.classList.remove('right-0');
+                    progressBar.classList.add('left-0');
+                }
+                
+            } else {
+                // To RTL structure
+                elementsToReverse.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) { el.classList.remove('flex-row-reverse'); el.classList.add('flex-row'); }
+                });
+                
+                if(happTextContainer) {
+                    happTextContainer.classList.remove('text-start', 'items-start');
+                    happTextContainer.classList.add('text-end', 'items-end');
+                }
+                if(configTitleTextContainer) {
+                    configTitleTextContainer.classList.remove('items-start', 'text-left');
+                    configTitleTextContainer.classList.add('items-end', 'text-right');
+                }
+                if(progressBar) {
+                    progressBar.classList.remove('left-0');
+                    progressBar.classList.add('right-0');
+                }
+            }
+        });
+
+        // Tab Switch Handler
+        window.setTab = function(tabId, animate = true) {
+            if (currentTab === tabId && animate) return;
+            currentTab = tabId;
+            
+            // Adjust tabs display
+            ['home', 'apps', 'configs'].forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                if (!el) return;
+                
+                if (t === tabId) {
+                    el.style.display = 'flex';
+                    // tiny delay to allow display block to apply before opacity fade-in
+                    if (animate) {
+                        setTimeout(() => el.classList.add('active'), 10);
+                    } else {
+                        el.classList.add('active');
+                    }
+                } else {
+                    el.classList.remove('active');
+                    if (animate) {
+                        setTimeout(() => el.style.display = 'none', 300); // Wait for transition
+                    } else {
+                        el.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Update Navigation Buttons Visual State
+            ['home', 'apps', 'configs'].forEach(t => {
+                const btn = document.getElementById('nav-' + t);
+                if (!btn) return;
+                const svg = btn.querySelector('svg');
+                const spans = btn.querySelectorAll('span');
+                const spanFa = spans[0];
+                const spanEn = spans[1];
+                
+                if (t === tabId) {
+                    btn.className = "nav-btn active flex flex-col items-center justify-center w-full py-2.5 rounded-full transition-all duration-300 relative bg-blue-50 dark:bg-slate-700 scale-100";
+                    svg.className = "w-5 h-5 mb-1 transition-colors text-blue-600 dark:text-blue-400";
+                    spanFa.className = "text-[10px] font-bold transition-colors text-blue-900 dark:text-white fa-only";
+                    spanEn.className = "text-[10px] font-bold transition-colors text-blue-900 dark:text-white en-only";
+                } else {
+                    btn.className = "nav-btn flex flex-col items-center justify-center w-full py-2.5 rounded-full transition-all duration-300 relative hover:bg-slate-50 dark:hover:bg-slate-700/50 scale-95 opacity-70 hover:opacity-100";
+                    svg.className = "w-5 h-5 mb-1 transition-colors text-slate-500";
+                    spanFa.className = "text-[10px] font-bold transition-colors text-slate-500 fa-only";
+                    spanEn.className = "text-[10px] font-bold transition-colors text-slate-500 en-only";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
