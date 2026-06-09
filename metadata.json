@@ -1,0 +1,8 @@
+{
+  "name": "AmiricanoVPN Panel",
+  "description": "Subscription panel theme for 3x-ui",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
